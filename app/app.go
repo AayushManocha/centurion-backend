@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 var App *fiber.App
@@ -15,6 +16,7 @@ func InitApp() *fiber.App {
 	}
 
 	App = fiber.New()
+	App.Use(logger.New())
 	App.Use(cors.New())
 
 	registerRoutes()
