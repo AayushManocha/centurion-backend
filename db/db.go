@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -29,12 +30,23 @@ func InitDB() *gorm.DB {
 	} else {
 		db_name = "/test.db"
 	}
-
-	db, err := gorm.Open(sqlite.Open(basepath+db_name), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
+	// postgresql://postgres:ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC@roundhouse.proxy.rlwy.net:32278/railway
+	// postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}
+	if os.Getenv("DB_TYPE") == "postgres" {
+		dsn := "host=roundhouse.proxy.rlwy.net user=postgres password=ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC dbname=centurion port=5432 sslmode=disable TimeZone=Asia/Kolkata"
+		dsn = "postgresql://postgres:ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC@roundhouse.proxy.rlwy.net:32278/railway"
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect to postgres database")
+		}
+		DB = db
+	} else {
+		db, err := gorm.Open(sqlite.Open(basepath+db_name), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+		DB = db
 	}
-	DB = db
 
 	SeedDB()
 
