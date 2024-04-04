@@ -43,6 +43,7 @@ func RetrieveOrCreateClerkUser(userEmail string) db.User {
 	if current_user.ID == 0 {
 		current_user = db.User{Email: userEmail}
 		db_conn.Create(&current_user)
+		db_conn.Where("email = ?", userEmail).First(&current_user)
 	}
 
 	return current_user
