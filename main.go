@@ -4,6 +4,7 @@ import (
 	"AayushManocha/centurion/centurion-backend/app"
 	"AayushManocha/centurion/centurion-backend/db"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -15,5 +16,11 @@ func main() {
 	}
 	db.InitDB()
 	application := app.InitApp()
-	application.Listen(":8080")
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	port = ":" + port
+	application.Listen(port)
 }
