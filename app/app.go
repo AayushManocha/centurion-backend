@@ -26,9 +26,18 @@ func InitApp() *fiber.App {
 func registerRoutes() {
 	// // Add access control headers
 	App.Use(func(c *fiber.Ctx) error {
-		c.Set("Access-Control-Allow-Origin", "http://localhost:8100")
-		c.Set("Access-Control-Allow-Origin", "capacitor://localhost") // For iOS
-		c.Set("Access-Control-Allow-Origin", "http://localhost")      // For Android
+		allowedOrigins := []string{
+			"http://localhost:8100",
+			"capacitor://localhost", // For iOS
+			"http://localhost",      // For Android
+		}
+		origin := c.Get("Origin")
+		if allowedOrigins[0] == origin || allowedOrigins[1] == origin || allowedOrigins[2] == origin {
+			c.Set("Access-Control-Allow-Origin", origin)
+		}
+		// c.Set("Access-Control-Allow-Origin", "http://localhost:8100")
+		// c.Set("Access-Control-Allow-Origin", "capacitor://localhost") // For iOS
+		// c.Set("Access-Control-Allow-Origin", "http://localhost")      // For Android
 		c.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		c.Set("Access-Control-Allow-Credentials", "true")
