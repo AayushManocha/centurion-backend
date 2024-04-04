@@ -31,8 +31,8 @@ func registerRoutes() {
 		return c.Next()
 	})
 
-	App.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
+	App.Get("healthcheck", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
 	})
 
 	App.Post("onboarding/income", handlers.OnboardingIncomeHandler)
