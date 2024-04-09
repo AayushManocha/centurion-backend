@@ -30,6 +30,7 @@ func registerRoutes() {
 			"http://localhost:8100",
 			"capacitor://localhost", // For iOS
 			"http://localhost",      // For Android
+			"192.168.2.151:8100",    //iOS emulator
 		}
 		origin := c.Get("Origin")
 		if allowedOrigins[0] == origin || allowedOrigins[1] == origin || allowedOrigins[2] == origin {
