@@ -32,9 +32,13 @@ func registerRoutes() {
 			"http://localhost",      // For Android
 			"192.168.2.151:8100",    //iOS emulator
 		}
+
 		origin := c.Get("Origin")
-		if allowedOrigins[0] == origin || allowedOrigins[1] == origin || allowedOrigins[2] == origin {
-			c.Set("Access-Control-Allow-Origin", origin)
+		for _, allowedOrigin := range allowedOrigins {
+			if allowedOrigin == origin {
+				c.Set("Access-Control-Allow-Origin", origin)
+				break
+			}
 		}
 		// c.Set("Access-Control-Allow-Origin", "http://localhost:8100")
 		// c.Set("Access-Control-Allow-Origin", "capacitor://localhost") // For iOS
@@ -60,5 +64,4 @@ func registerRoutes() {
 
 	App.Get("categories", handlers.GetAllCategoriesHandler)
 	App.Get("categories/:id", handlers.ViewCategoryHandler)
-
 }
