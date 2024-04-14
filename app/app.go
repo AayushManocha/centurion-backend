@@ -33,6 +33,8 @@ func registerRoutes() {
 			"192.168.2.151:8100",    //iOS emulator
 		}
 
+		_ = allowedOrigins
+
 		origin := c.Get("Origin")
 		// for _, allowedOrigin := range allowedOrigins {
 		// 	if allowedOrigin == origin {
