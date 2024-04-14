@@ -34,12 +34,13 @@ func registerRoutes() {
 		}
 
 		origin := c.Get("Origin")
-		for _, allowedOrigin := range allowedOrigins {
-			if allowedOrigin == origin {
-				c.Set("Access-Control-Allow-Origin", origin)
-				break
-			}
-		}
+		// for _, allowedOrigin := range allowedOrigins {
+		// 	if allowedOrigin == origin {
+		// 		c.Set("Access-Control-Allow-Origin", origin)
+		// 		break
+		// 	}
+		// }
+		c.Set("Access-Control-Allow-Origin", origin)
 		// c.Set("Access-Control-Allow-Origin", "http://localhost:8100")
 		// c.Set("Access-Control-Allow-Origin", "capacitor://localhost") // For iOS
 		// c.Set("Access-Control-Allow-Origin", "http://localhost")      // For Android
