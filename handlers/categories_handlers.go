@@ -10,7 +10,7 @@ import (
 func GetAllCategoriesHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	db_conn := db.InitDB()
@@ -25,7 +25,7 @@ func GetAllCategoriesHandler(c *fiber.Ctx) error {
 func ViewCategoryHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	categoryID := c.Params("id")

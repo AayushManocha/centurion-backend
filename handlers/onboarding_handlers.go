@@ -15,7 +15,7 @@ func OnboardingStatusHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	db_conn := db.GetDB()
@@ -36,7 +36,7 @@ func OnboardingIncomeHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	dto := new(OnboardingIncomeDTO)
@@ -76,7 +76,7 @@ func OnboardingCategoryHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	dto := new(OnboardingCategories)

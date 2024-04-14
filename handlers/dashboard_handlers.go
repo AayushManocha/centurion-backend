@@ -43,7 +43,7 @@ func MonthlyDashboardHandler(c *fiber.Ctx) error {
 	user, err := middleware.AuthenticatedUser(c)
 	_ = user
 	if err != nil {
-		return c.SendString("Invalid token")
+		return c.SendString("Invalid token" + err.Error())
 	}
 
 	date := c.Params("date")
