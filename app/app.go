@@ -2,6 +2,8 @@ package app
 
 import (
 	"AayushManocha/centurion/centurion-backend/handlers"
+	"AayushManocha/centurion/centurion-backend/middleware"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -11,6 +13,7 @@ import (
 var App *fiber.App
 
 func InitApp() *fiber.App {
+	fmt.Println("Initializing app")
 	if App != nil {
 		return App
 	}
@@ -18,13 +21,7 @@ func InitApp() *fiber.App {
 	App = fiber.New()
 	App.Use(logger.New())
 	App.Use(cors.New())
-
-	registerRoutes()
-	return App
-}
-
-func registerRoutes() {
-	// // Add access control headers
+	App.Use(middleware.EnsureAuthenticated)
 	App.Use(func(c *fiber.Ctx) error {
 		allowedOrigins := []string{
 			"http://localhost:8100",
@@ -36,22 +33,19 @@ func registerRoutes() {
 		_ = allowedOrigins
 
 		origin := c.Get("Origin")
-		// for _, allowedOrigin := range allowedOrigins {
-		// 	if allowedOrigin == origin {
-		// 		c.Set("Access-Control-Allow-Origin", origin)
-		// 		break
-		// 	}
-		// }
 		c.Set("Access-Control-Allow-Origin", origin)
-		// c.Set("Access-Control-Allow-Origin", "http://localhost:8100")
-		// c.Set("Access-Control-Allow-Origin", "capacitor://localhost") // For iOS
-		// c.Set("Access-Control-Allow-Origin", "http://localhost")      // For Android
+		fmt.Println("Setting origin to", origin)
 		c.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		c.Set("Access-Control-Allow-Credentials", "true")
 		return c.Next()
 	})
 
+	registerRoutes()
+	return App
+}
+
+func registerRoutes() {
 	App.Get("healthcheck", func(c *fiber.Ctx) error {
 		return c.SendString("OK")
 	})

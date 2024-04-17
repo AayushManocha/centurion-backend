@@ -12,11 +12,7 @@ type OnboardingIncomeDTO struct {
 }
 
 func OnboardingStatusHandler(c *fiber.Ctx) error {
-	user, err := middleware.AuthenticatedUser(c)
-
-	if err != nil {
-		return c.SendString("Invalid token" + err.Error())
-	}
+	user, _ := middleware.AuthenticatedUser(c)
 
 	db_conn := db.GetDB()
 	income_record := db.UserMonthlyIncome{}
@@ -33,11 +29,7 @@ func OnboardingStatusHandler(c *fiber.Ctx) error {
 }
 
 func OnboardingIncomeHandler(c *fiber.Ctx) error {
-	user, err := middleware.AuthenticatedUser(c)
-
-	if err != nil {
-		return c.SendString("Invalid token" + err.Error())
-	}
+	user, _ := middleware.AuthenticatedUser(c)
 
 	dto := new(OnboardingIncomeDTO)
 

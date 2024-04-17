@@ -9,11 +9,7 @@ import (
 )
 
 func WeeklyDashboardHandler(c *fiber.Ctx) error {
-	user, err := middleware.AuthenticatedUser(c)
-	_ = user
-	if err != nil {
-		return c.SendString("Invalid token: " + err.Error())
-	}
+	user, _ := middleware.AuthenticatedUser(c)
 
 	date := c.Params("date")
 	parsedDate, err := time.Parse("2006-01-02", date)
@@ -40,11 +36,7 @@ func WeeklyDashboardHandler(c *fiber.Ctx) error {
 }
 
 func MonthlyDashboardHandler(c *fiber.Ctx) error {
-	user, err := middleware.AuthenticatedUser(c)
-	_ = user
-	if err != nil {
-		return c.SendString("Invalid token" + err.Error())
-	}
+	user, _ := middleware.AuthenticatedUser(c)
 
 	date := c.Params("date")
 	parsedDate, err := time.Parse("2006-01-02", date)

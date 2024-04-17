@@ -75,3 +75,12 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 
 	return current_user, err
 }
+
+func EnsureAuthenticated(c *fiber.Ctx) error {
+	fmt.Println("Checking for auth")
+	_, err := AuthenticatedUser(c)
+	if err != nil {
+		return c.Status(401).SendString("Unauthorized")
+	}
+	return c.Next()
+}

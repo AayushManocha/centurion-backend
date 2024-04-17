@@ -16,10 +16,7 @@ type AddExpenseDTO struct {
 }
 
 func AddExpenseHandler(c *fiber.Ctx) error {
-	user, err := middleware.AuthenticatedUser(c)
-	if err != nil {
-		return c.SendString("Invalid token" + err.Error())
-	}
+	user, _ := middleware.AuthenticatedUser(c)
 
 	dto := new(AddExpenseDTO)
 	if err := c.BodyParser(dto); err != nil {
