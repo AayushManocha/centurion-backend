@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -20,8 +19,18 @@ func InitApp() *fiber.App {
 
 	App = fiber.New()
 	App.Use(logger.New())
-	App.Use(cors.New())
-	App.Use(middleware.EnsureAuthenticated)
+	// App.Use(cors.New())
+	App.Use(func(c *fiber.Ctx) error {
+		// Custom PREFLIGHT request handler
+		if c.Method() == "OPTIONS" {
+			c.Set("Access-Control-Allow-Origin", "*")
+			c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+			c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			c.Set("Access-Control-Max-Age", "86400")
+			return c.SendStatus(204)
+		}
+		return c.Next()
+	})
 	App.Use(func(c *fiber.Ctx) error {
 		allowedOrigins := []string{
 			"http://localhost:8100",
@@ -41,6 +50,7 @@ func InitApp() *fiber.App {
 		c.Response().Header.Set("Access-Control-Allow-Origin", origin)
 		return c.Next()
 	})
+	App.Use(middleware.EnsureAuthenticated)
 
 	registerRoutes()
 	return App
