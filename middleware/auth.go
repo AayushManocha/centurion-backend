@@ -55,6 +55,8 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 		return db.User{}, fmt.Errorf("no token provided")
 	}
 
+	token = token[7:]
+
 	if os.Getenv("ENVIRONMENT") == "testing" {
 		test_user := db.User{}
 		db_conn := db.InitDB()
@@ -84,7 +86,8 @@ func EnsureAuthenticated(c *fiber.Ctx) error {
 	_, err := AuthenticatedUser(c)
 	if err != nil {
 		fmt.Println("Unauthorized on request: ", c.Path())
-		return c.Status(401).SendString("Unauthorized")
+		fmt.Println("error: ", err.Error())
+		return c.Status(401).SendString("Could not authorize user")
 	}
 	return c.Next()
 }
