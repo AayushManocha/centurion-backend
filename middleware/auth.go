@@ -50,7 +50,10 @@ func RetrieveOrCreateClerkUser(userEmail string) db.User {
 }
 
 func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
-	token := c.Get("Authorization")[7:]
+	token := c.Get("Authorization")
+	if token == "" {
+		return db.User{}, fmt.Errorf("no token provided")
+	}
 
 	if os.Getenv("ENVIRONMENT") == "testing" {
 		test_user := db.User{}
