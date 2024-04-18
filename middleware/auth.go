@@ -83,6 +83,7 @@ func EnsureAuthenticated(c *fiber.Ctx) error {
 	fmt.Println("Checking for auth")
 	_, err := AuthenticatedUser(c)
 	if err != nil {
+		fmt.Println("Unauthorized on request: ", c.Path())
 		return c.Status(401).SendString("Unauthorized")
 	}
 	return c.Next()
