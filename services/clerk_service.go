@@ -10,9 +10,9 @@ import (
 func GetUserById(id string) (*clerk.User, error) {
 	clerk_api_key := os.Getenv("CLERK_SECRET_KEY")
 
-	fmt.Println("CLERK_SECRET_KEY: " + clerk_api_key)
-
 	client, err := clerk.NewClient(clerk_api_key)
+
+	fmt.Println("CLERK_SECRET_KEY: " + client.APIKey())
 
 	if err != nil {
 		fmt.Println(clerk_api_key)
