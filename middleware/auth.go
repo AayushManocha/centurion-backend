@@ -57,6 +57,8 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 
 	token = token[7:]
 
+	fmt.Println("Token: ", token)
+
 	if os.Getenv("ENVIRONMENT") == "testing" {
 		test_user := db.User{}
 		db_conn := db.InitDB()
