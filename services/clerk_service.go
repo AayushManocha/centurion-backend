@@ -20,6 +20,7 @@ func GetUserById(id string) (*clerk.User, error) {
 	user, err := client.Users().Read(id)
 
 	if err != nil {
+		fmt.Println("Error reading user: " + err.Error())
 		return nil, err
 	}
 
