@@ -1,32 +1,66 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
 
 func GetUserById(id string) (*clerk.User, error) {
-	clerk_api_key := os.Getenv("CLERK_SECRET_KEY")
+	// clerk_api_key := os.Getenv("CLERK_SECRET_KEY")
 
-	client, err := clerk.NewClient(clerk_api_key)
+	// client, err := clerk.NewClient(clerk_api_key)
+	client := http.Client{}
 
-	fmt.Println("CLERK_SECRET_KEY: " + client.APIKey())
+	// fmt.Println("CLERK_SECRET_KEY: " + client.APIKey())
 
+	// if err != nil {
+	// 	fmt.Println(clerk_api_key)
+	// 	fmt.Println("Error creating Clerk client: " + err.Error())
+	// 	return nil, err
+	// }
+
+	// user, err := client.Users().Read(id)
+
+	req, err := http.NewRequest("GET", "https://api.clerk.dev/v1/users/"+id, nil)
 	if err != nil {
-		fmt.Println(clerk_api_key)
-		fmt.Println("Error creating Clerk client: " + err.Error())
+		fmt.Println("Error creating request: " + err.Error())
+	}
+
+	req.Header.Add("Authorization", "Bearer "+os.Getenv("CLERK_SECRET_KEY"))
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error getting user: " + err.Error())
 		return nil, err
 	}
-	user, err := client.Users().Read(id)
 
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading user: " + err.Error())
+	}
+
+	// Print body as string
+	fmt.Println(string(body))
+
+	// Parse body into Clerk.User
+
+	var user *clerk.User
+	err = json.Unmarshal(body, &user)
+
+	if err != nil {
+		fmt.Println("Error parsing user: " + err.Error())
 		return nil, err
 	}
 
 	return user, nil
+
 }
 
 func GenerateSessionToken() (*clerk.Session, error) {
