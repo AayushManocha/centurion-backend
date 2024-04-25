@@ -10,21 +10,8 @@ import (
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
 
-func GetUserById(id string) (*clerk.User, error) {
-	// clerk_api_key := os.Getenv("CLERK_SECRET_KEY")
-
-	// client, err := clerk.NewClient(clerk_api_key)
+func GetClerkUserById(id string) (*clerk.User, error) {
 	client := http.Client{}
-
-	// fmt.Println("CLERK_SECRET_KEY: " + client.APIKey())
-
-	// if err != nil {
-	// 	fmt.Println(clerk_api_key)
-	// 	fmt.Println("Error creating Clerk client: " + err.Error())
-	// 	return nil, err
-	// }
-
-	// user, err := client.Users().Read(id)
 
 	req, err := http.NewRequest("GET", "https://api.clerk.dev/v1/users/"+id, nil)
 	if err != nil {

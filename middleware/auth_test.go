@@ -10,7 +10,7 @@ func TestThatWhenAUserFirstLogsInThatWeCreateAUserRecord(t *testing.T) {
 	helpers.ConfigureTests(t)
 	db_connection := db.InitDB()
 
-	RetrieveOrCreateClerkUser("aayush.manocha@gmail.com")
+	RetrieveOrCreateClerkUserFromDatabase("aayush.manocha@gmail.com")
 
 	var user db.User
 	db_connection.Where("email = ?", "aayush.manocha@gmail.com").First(&user)
@@ -31,7 +31,7 @@ func TestThatDuplicateUserRecordsAreNotCreated(t *testing.T) {
 	var users []db.User
 	db_connection.Find(&users).Count(&initial_user_count)
 
-	RetrieveOrCreateClerkUser("aayush.manocha@gmail.com")
+	RetrieveOrCreateClerkUserFromDatabase("aayush.manocha@gmail.com")
 
 	var final_user_count int64
 	db_connection.Find(&users).Count(&final_user_count)

@@ -35,7 +35,7 @@ func getUserFromJWT(token string) (string, error) {
 	return claims.(jwt.MapClaims)["sub"].(string), nil
 }
 
-func RetrieveOrCreateClerkUser(userEmail string) db.User {
+func RetrieveOrCreateClerkUserFromDatabase(userEmail string) db.User {
 	db_conn := db.GetDB()
 	current_user := db.User{}
 
@@ -72,12 +72,12 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 
 	if err == nil {
 		// Use Clerk client to get user email
-		user, err := services.GetUserById(userId)
+		user, err := services.GetClerkUserById(userId)
 		if err != nil {
 			return current_user, err
 		}
 		userEmail := user.EmailAddresses[0].EmailAddress
-		current_user = RetrieveOrCreateClerkUser(userEmail)
+		current_user = RetrieveOrCreateClerkUserFromDatabase(userEmail)
 	}
 
 	return current_user, err
