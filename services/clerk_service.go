@@ -13,6 +13,8 @@ import (
 func GetClerkUserById(id string) (*clerk.User, error) {
 	client := http.Client{}
 
+	fmt.Println("Getting user from clerk with ID: " + id)
+
 	req, err := http.NewRequest("GET", "https://api.clerk.dev/v1/users/"+id, nil)
 	if err != nil {
 		fmt.Println("Error creating request: " + err.Error())
