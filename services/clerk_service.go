@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
@@ -21,9 +22,10 @@ func GetClerkUserById(id string) (*clerk.User, error) {
 	}
 
 	authToken := os.Getenv("CLERK_SECRET_KEY")
+	authToken = strings.Replace(authToken, "\n", "", -1)
 	fmt.Printf("Auth token: %s\n", authToken)
-
-	req.Header.Add("Authorization", "Bearer "+authToken)
+	authHeader := "Bearer " + authToken
+	req.Header.Add("Authorization", authHeader)
 
 	resp, err := client.Do(req)
 	if err != nil {
