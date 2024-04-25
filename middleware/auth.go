@@ -70,6 +70,8 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 	current_user := db.User{}
 	userId, err := getUserFromJWT(token)
 
+	fmt.Println("User ID: ", userId)
+
 	if err == nil {
 		// Use Clerk client to get user email
 		user, err := services.GetClerkUserById(userId)
