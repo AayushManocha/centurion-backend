@@ -20,7 +20,10 @@ func GetClerkUserById(id string) (*clerk.User, error) {
 		fmt.Println("Error creating request: " + err.Error())
 	}
 
-	req.Header.Add("Authorization", "Bearer "+os.Getenv("CLERK_SECRET_KEY"))
+	authToken := os.Getenv("CLERK_SECRET_KEY")
+	fmt.Printf("Auth token: %s\n", authToken)
+
+	req.Header.Add("Authorization", "Bearer "+authToken)
 
 	resp, err := client.Do(req)
 	if err != nil {

@@ -76,6 +76,7 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 		// Use Clerk client to get user email
 		user, err := services.GetClerkUserById(userId)
 		if err != nil {
+			fmt.Println("Error getting user from Clerk: ", err.Error())
 			return current_user, err
 		}
 		userEmail := user.EmailAddresses[0].EmailAddress
