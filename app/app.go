@@ -25,7 +25,7 @@ func InitApp() *fiber.App {
 		if c.Method() == "OPTIONS" {
 			c.Set("Access-Control-Allow-Origin", "*")
 			c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-			c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, X-Requested-With, Accept, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Access-Control-Allow-Methods")
 			c.Set("Access-Control-Max-Age", "86400")
 			return c.SendStatus(204)
 		}
