@@ -32,9 +32,7 @@ func InitDB() *gorm.DB {
 	// postgresql://postgres:ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC@roundhouse.proxy.rlwy.net:32278/railway
 	// postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}
 	if os.Getenv("DB_TYPE") == "postgres" {
-		dsn := "host=roundhouse.proxy.rlwy.net user=postgres password=ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC dbname=centurion port=5432 sslmode=disable TimeZone=Asia/Kolkata"
-		dsn = "postgresql://postgres:ZoWPvhNyECpoQJoItFHYNhFlMcjTHpmC@roundhouse.proxy.rlwy.net:32278/railway"
-		dsn = "postgres://aayush_manocha_centurion_db_user:6DSkE4zKvCktoPeK2VigTJQl1zAAEPtx@dpg-coqjq65jm4es73aoh4d0-a.oregon-postgres.render.com/aayush_manocha_centurion_db"
+		dsn := "postgres://aayush_manocha_centurion_db_user:6DSkE4zKvCktoPeK2VigTJQl1zAAEPtx@dpg-coqjq65jm4es73aoh4d0-a.oregon-postgres.render.com/aayush_manocha_centurion_db"
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			panic("failed to connect to postgres database")
