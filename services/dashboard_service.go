@@ -2,7 +2,6 @@ package services
 
 import (
 	"AayushManocha/centurion/centurion-backend/db"
-	"fmt"
 	"time"
 )
 
@@ -48,7 +47,7 @@ func FetchMonthlyExpensesWithCategories(user db.User, date time.Time) []Category
 
 	lastDayOfMonth := time.Date(date.Year(), date.Month()+1, 0, 0, 0, 0, 0, time.UTC)
 
-	fmt.Printf("Last day of month: %s\n", lastDayOfMonth)
+	// fmt.Printf("Last day of month: %s\n", lastDayOfMonth)
 
 	categoryExpenses := new([]CategoryExpense)
 	for _, category := range monthlyCategories {
@@ -56,7 +55,7 @@ func FetchMonthlyExpensesWithCategories(user db.User, date time.Time) []Category
 		var monthlyExpenses []db.UserExpense
 		db_conn.Where("category_id = ? AND date >= ? AND date <= ?", category.ID, date, lastDayOfMonth).Find(&monthlyExpenses)
 
-		fmt.Printf("Monthly expenses for category %s: %+v\n", category.Title, monthlyExpenses)
+		// fmt.Printf("Monthly expenses for category %s: %+v\n", category.Title, monthlyExpenses)
 
 		for _, expense := range monthlyExpenses {
 			totalExpense += expense.Amount

@@ -3,7 +3,6 @@ package app
 import (
 	"AayushManocha/centurion/centurion-backend/handlers"
 	"AayushManocha/centurion/centurion-backend/middleware"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -12,7 +11,7 @@ import (
 var App *fiber.App
 
 func InitApp() *fiber.App {
-	fmt.Println("Initializing app")
+	// fmt.Println("Initializing app")
 	if App != nil {
 		return App
 	}
@@ -43,7 +42,7 @@ func InitApp() *fiber.App {
 
 		origin := c.Get("Origin")
 		c.Set("Access-Control-Allow-Origin", origin)
-		fmt.Println("Setting origin to", origin)
+		// fmt.Println("Setting origin to", origin)
 		c.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		c.Set("Access-Control-Allow-Credentials", "true")

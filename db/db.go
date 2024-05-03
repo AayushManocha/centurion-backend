@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -21,7 +20,7 @@ func InitDB() *gorm.DB {
 	_, b, _, _ := runtime.Caller(0)
 	basepath := filepath.Dir(b)
 
-	fmt.Printf("Basepath: %s\n", basepath)
+	// fmt.Printf("Basepath: %s\n", basepath)
 
 	var db_name string
 

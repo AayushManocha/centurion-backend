@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -15,7 +14,7 @@ func TestClerkGetUserByID(t *testing.T) {
 		t.Errorf("Error getting user by ID: %s", err.Error())
 	}
 
-	fmt.Printf("User: %+v \n ", user)
+	// fmt.Printf("User: %+v \n ", user)
 
 	emailAddress := user.EmailAddresses[0].EmailAddress
 

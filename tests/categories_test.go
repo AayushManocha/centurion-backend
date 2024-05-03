@@ -6,6 +6,7 @@ import (
 	"AayushManocha/centurion/centurion-backend/helpers"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http/httptest"
 	"testing"
 )
@@ -119,6 +120,50 @@ func TestGetIndividualCategory(t *testing.T) {
 
 	if len(responseBody.Expenses) != 2 {
 		t.Errorf("Expected 2 expenses, but got %d", len(responseBody.Category.UserExpenses))
+	}
+
+}
+
+func TestDeleteCategory(t *testing.T) {
+	helpers.ConfigureTests(t)
+
+	application := app.InitApp()
+
+	db_conn := db.InitDB()
+	var testUser db.User
+	db_conn.Where("email = ?", "aayush.manocha@gmail.com").First(&testUser)
+
+	// Create test category
+	var testCategory db.UserSpendingCategory
+	db_conn.Create(&db.UserSpendingCategory{
+		Title:        "Test category",
+		UserID:       testUser.ID,
+		BudgetAmount: 1000,
+	})
+	db_conn.Where("title = ?", "Test category").First(&testCategory)
+
+	request := httptest.NewRequest("DELETE", fmt.Sprintf("/categories/%d", testCategory.ID), nil)
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", "Bearer eyJhbGciOiJSUzI1NiIsImNhdCI6ImNsX0I3ZDRQRDExMUFBQSIsImtpZCI6Imluc18yZUNqcU5va2sxMWF0elcxU2RhUlRBSXVLalkiLCJ0eXAiOiJKV1QifQ.eyJhenAiOiJodHRwOi8vbG9jYWxob3N0OjgxMDAiLCJleHAiOjE3MTE4NjM0NDYsImlhdCI6MTcxMTg2MzM4NiwiaXNzIjoiaHR0cHM6Ly9jbG9zZS1iYWRnZXItMTEuY2xlcmsuYWNjb3VudHMuZGV2IiwibmJmIjoxNzExODYzMzc2LCJzaWQiOiJzZXNzXzJlTGZaUFpsSDRuMmRmWkZnYkpUb2w4S05CeCIsInN1YiI6InVzZXJfMmVDbDZBUzVTZzdHdlJnWGt0ZUY4STg4Z3NuIn0.aouryvm3OD3nGRGCWgGF7Ov53MhgHMI3xrkS6gtabWZX_ip0OGtdHvtC7D-vYgLcI1THpIcjtR6cRYvAzdldcmmt-4BW-lqs3XttapCy1EiRONTU_jzOA265FCijrjsUhWEFPVFGQPrgTpL-tdEtX1afo-Rwow5xQBDEFvyRP-8Au804gL8oGosUEODjuU_SvoHMYdTVweg6kFGBOShW6g7UmJAldugQQRpK8aqu8YzoTiym78wji520zZV2Y3vUU9-ma6UsAhax-")
+
+	response, _ := application.Test(request)
+
+	if response.StatusCode != 200 {
+		t.Errorf("Expected status code 200, but got %d", response.StatusCode)
+	}
+
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(string(body))
+
+	// Check if category was deleted
+	db_conn.Where("title = ?", "Test category").First(&testCategory)
+	if testCategory.DeletedAt.Time.IsZero() == false {
+		t.Errorf("Expected category to be deleted, but it wasn't")
 	}
 
 }
