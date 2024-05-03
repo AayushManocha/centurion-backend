@@ -22,6 +22,33 @@ func GetAllCategoriesHandler(c *fiber.Ctx) error {
 	})
 }
 
+func DeleteCategoryHandler(c *fiber.Ctx) error {
+	user, _ := middleware.AuthenticatedUser(c)
+
+	categoryID := c.Params("id")
+	db_conn := db.InitDB()
+
+	var category db.UserSpendingCategory
+	db_conn.Where("id = ? AND user_id = ?", categoryID, user.ID).First(&category)
+
+	if category.ID == 0 {
+		return c.Status(404).JSON(fiber.Map{
+			"error": "Category not found",
+		})
+	}
+
+	if category.UserID != user.ID {
+		return c.Status(403).JSON(fiber.Map{
+			"error": "Unauthorized",
+		})
+	}
+
+	db_conn.Delete(&category)
+	return c.JSON(fiber.Map{
+		"message": "Category deleted",
+	})
+}
+
 func ViewCategoryHandler(c *fiber.Ctx) error {
 	user, _ := middleware.AuthenticatedUser(c)
 

@@ -72,4 +72,5 @@ func registerRoutes() {
 
 	App.Get("categories", handlers.GetAllCategoriesHandler)
 	App.Get("categories/:id", handlers.ViewCategoryHandler)
+	App.Delete("categories/:id", handlers.DeleteCategoryHandler)
 }
