@@ -3,6 +3,7 @@ package handlers
 import (
 	"AayushManocha/centurion/centurion-backend/db"
 	"AayushManocha/centurion/centurion-backend/middleware"
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,6 +37,8 @@ func AddExpenseHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println("adding expense to category: ", category.Title)
+
 	parsedDate, _ := time.Parse("2006-01-02", dto.Date)
 	expense := db.UserExpense{
 		Amount:      dto.Amount,
@@ -43,6 +46,8 @@ func AddExpenseHandler(c *fiber.Ctx) error {
 		Description: dto.Description,
 		CategoryID:  dto.CategoryID,
 	}
+
+	fmt.Printf("Expense: %+v \n", expense)
 
 	db_conn.Create(&expense)
 	return c.JSON(fiber.Map{

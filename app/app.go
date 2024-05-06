@@ -66,6 +66,7 @@ func registerRoutes() {
 
 	App.Get("dashboard/weekly/:date", handlers.WeeklyDashboardHandler)
 	App.Get("dashboard/monthly/:date", handlers.MonthlyDashboardHandler)
+	App.Get("dashboard/metrics/monthly/:date", handlers.MonthlyMetricsHandler)
 
 	App.Post("expense", handlers.AddExpenseHandler)
 
