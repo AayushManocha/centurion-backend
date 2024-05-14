@@ -22,8 +22,16 @@ func verifyJWT(tokenString string) (jwt.Claims, error) {
 	-----END PUBLIC KEY-----`
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return secretKey, nil
 	})
+
+	fmt.Printf("Token: %+v\n", token)
+	fmt.Printf("Token.Valid: %+v\n", token.Valid)
+
+	// if err != nil {
+	// 	fmt.Printf("Error parsing token: %s\n", err.Error())
+	// 	return nil, err
+	// }
 	return token.Claims, err
 }
 
@@ -57,20 +65,15 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 
 	token = token[7:]
 
-	// fmt.Println("Token: ", token)
-
 	if os.Getenv("ENVIRONMENT") == "testing" {
 		test_user := db.User{}
 		db_conn := db.InitDB()
 		db_conn.Where("email = ?", "aayush.manocha@gmail.com").First(&test_user)
-		// fmt.Printf("Test user: %+v\n", test_user)
 		return test_user, nil
 	}
 
 	current_user := db.User{}
 	userId, err := getUserFromJWT(token)
-
-	// fmt.Println("User ID: ", userId)
 
 	if err == nil {
 		// Use Clerk client to get user email
@@ -87,11 +90,8 @@ func AuthenticatedUser(c *fiber.Ctx) (db.User, error) {
 }
 
 func EnsureAuthenticated(c *fiber.Ctx) error {
-	// fmt.Println("Checking for auth")
 	_, err := AuthenticatedUser(c)
 	if err != nil {
-		// fmt.Println("Unauthorized on request: ", c.Path())
-		// fmt.Println("error: ", err.Error())
 		return c.Status(401).SendString("Could not authorize user")
 	}
 	return c.Next()

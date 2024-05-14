@@ -69,3 +69,63 @@ func TestFetchWeeklyExpensesWithCategories(t *testing.T) {
 	}
 
 }
+
+func Test_FetchMonthlyMetrics(t *testing.T) {
+	helpers.ConfigureTests(t)
+
+	db_conn := db.InitDB()
+	var testUser db.User
+	db_conn.Where("email = ?", "aayush.manocha@gmail.com")
+
+	// Create a weekly category
+	weeklyCategory := db.UserSpendingCategory{
+		UserID:          testUser.ID,
+		Title:           "Weekly Category",
+		BudgetAmount:    400,
+		IsTrackedWeekly: true,
+	}
+
+	monthlyCategory := db.UserSpendingCategory{
+		UserID:          testUser.ID,
+		Title:           "Monthly Category",
+		BudgetAmount:    400,
+		IsTrackedWeekly: false,
+	}
+
+	db_conn.Create(&weeklyCategory)
+	db_conn.Create(&monthlyCategory)
+
+	weeklyExpense := db.UserExpense{
+		CategoryID: weeklyCategory.ID,
+		Amount:     100,
+		Date:       time.Date(2023, 8, 2, 0, 0, 0, 0, time.UTC),
+	}
+
+	monthlyExpense := db.UserExpense{
+		CategoryID: monthlyCategory.ID,
+		Amount:     200,
+		Date:       time.Date(2023, 8, 20, 0, 0, 0, 0, time.UTC),
+	}
+
+	db_conn.Create(&weeklyExpense)
+	db_conn.Create(&monthlyExpense)
+
+	result := FetchMonthlyMetrics(testUser, time.Date(2023, 8, 1, 0, 0, 0, 0, time.UTC))
+
+	if len(result.Expenses) != 2 {
+		t.Errorf("Expected 2 expenses, got %d", len(result.Expenses))
+	}
+
+	if result.TotalSpend != 300 {
+		t.Errorf("Expected total spend to be 300, got %d", result.TotalSpend)
+	}
+
+	if result.TotalBudget != 800 {
+		t.Errorf("Expected total budget to be 800, got %d", result.TotalBudget)
+	}
+
+	if result.Remaining != 500 {
+		t.Errorf("Expected remaining budget to be 500, got %d", result.Remaining)
+	}
+
+}

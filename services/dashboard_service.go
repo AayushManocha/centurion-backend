@@ -2,7 +2,6 @@ package services
 
 import (
 	"AayushManocha/centurion/centurion-backend/db"
-	"fmt"
 	"time"
 )
 
@@ -19,11 +18,6 @@ func FetchWeeklyExpensesWithCategories(user db.User, date time.Time) []CategoryE
 	var weeklyCategories []db.UserSpendingCategory
 	db_conn.Where("user_id = ? AND is_tracked_weekly = ?", user.ID, true).Find(&weeklyCategories)
 
-	fmt.Printf("Weekly categories: %+v \n", weeklyCategories)
-
-	fmt.Printf("start date: %s\n", date)
-	fmt.Printf("end date: %s\n", date.AddDate(0, 0, 6))
-
 	categoryExpenses := new([]CategoryExpense)
 	for _, category := range weeklyCategories {
 		var totalExpense int
@@ -33,10 +27,6 @@ func FetchWeeklyExpensesWithCategories(user db.User, date time.Time) []CategoryE
 		for _, expense := range weeklyExpenses {
 			totalExpense += expense.Amount
 		}
-
-		// fmt.Printf("Weekly expenses: %+v \n", weeklyExpenses)
-
-		fmt.Printf("Total expense for category %s: %d\n", category.Title, totalExpense)
 
 		*categoryExpenses = append(*categoryExpenses, CategoryExpense{
 			CategoryID:      category.ID,
@@ -84,49 +74,42 @@ func FetchMonthlyExpensesWithCategories(user db.User, date time.Time) []Category
 }
 
 type MonthlyMetric struct {
-	expenses    []CategoryExpense
-	totalSpend  int
-	totalBudget int
-	remaining   int
+	Expenses    []db.UserExpense `json:"expenses"`
+	TotalSpend  int              `json:"totalSpend"`
+	TotalBudget int              `json:"totalBudget"`
+	Remaining   int              `json:"remaining"`
 }
 
-func FetchMonthlyMetrics(user db.User, date time.Time) MonthlyMetric {
+func FetchMonthlyMetrics(user db.User, date time.Time) *MonthlyMetric {
 	db_conn := db.GetDB()
 	var monthlyCategories []db.UserSpendingCategory
 	db_conn.Where("user_id = ?", user.ID).Find(&monthlyCategories)
 
 	lastDayOfMonth := time.Date(date.Year(), date.Month()+1, 0, 0, 0, 0, 0, time.UTC)
 
-	categoryExpenses := new([]CategoryExpense)
+	var totalSpend int
+	var totalBudget int
+
+	// categoryExpenses := new([]CategoryExpense)
+	allExpenses := new([]db.UserExpense)
 	for _, category := range monthlyCategories {
 		var totalExpense int
 		var monthlyExpenses []db.UserExpense
 		db_conn.Where("category_id = ? AND date >= ? AND date <= ?", category.ID, date, lastDayOfMonth).Find(&monthlyExpenses)
 
 		for _, expense := range monthlyExpenses {
+			*allExpenses = append(*allExpenses, expense)
 			totalExpense += expense.Amount
 		}
 
-		*categoryExpenses = append(*categoryExpenses, CategoryExpense{
-			CategoryID:      category.ID,
-			CategoryTitle:   category.Title,
-			TotalExpense:    totalExpense,
-			RemainingBudget: category.BudgetAmount - totalExpense,
-			TotalBudget:     category.BudgetAmount,
-		})
+		totalSpend += totalExpense
+		totalBudget += category.BudgetAmount
 	}
 
-	var totalSpend int
-	var totalBudget int
-	for _, category := range *categoryExpenses {
-		totalSpend += category.TotalExpense
-		totalBudget += category.TotalBudget
-	}
-
-	return MonthlyMetric{
-		expenses:    *categoryExpenses,
-		totalSpend:  totalSpend,
-		totalBudget: totalBudget,
-		remaining:   totalBudget - totalSpend,
+	return &MonthlyMetric{
+		Expenses:    *allExpenses,
+		TotalSpend:  totalSpend,
+		TotalBudget: totalBudget,
+		Remaining:   totalBudget - totalSpend,
 	}
 }
