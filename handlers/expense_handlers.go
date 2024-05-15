@@ -16,6 +16,31 @@ type AddExpenseDTO struct {
 	CategoryID  int    `json:"category_id"`
 }
 
+func DeleteExpenseHandler(c *fiber.Ctx) error {
+	user, _ := middleware.AuthenticatedUser(c)
+
+	expenseID := c.Params("id")
+
+	fmt.Printf("Deleting expense with ID: %s\n", expenseID)
+	fmt.Printf("User: %+v\n", user)
+
+	db_conn := db.InitDB()
+	var expense db.UserExpense
+	db_conn.Where("id = ?", expenseID).Find(&expense)
+
+	if expense.ID == 0 {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Invalid expense",
+		})
+	}
+
+	db_conn.Delete(&expense)
+	return c.JSON(fiber.Map{
+		"success": true,
+	})
+
+}
+
 func AddExpenseHandler(c *fiber.Ctx) error {
 	user, _ := middleware.AuthenticatedUser(c)
 
